@@ -13,8 +13,15 @@ let app = express();
 // initialize connection string for master DB
 const db = connection.db
 
-app.set('mongo', db)
-// app.get('mongo')
+// Enabled cross site scripting. 
+// Therefore, API can be used by other application as this api may host in another domain
+app.use(function(req, res, next) {
+  res.header(newFunction(), "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
+
+app.set('mongo', db);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -42,3 +49,7 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+function newFunction() {
+  return "Access-Control-Allow-Origin";
+}
+
